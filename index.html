@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>WebGIS SITARO</title>
+
+<link rel="stylesheet" href="css/leaflet.css">
+<link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+<link rel="stylesheet" href="css/L.Control.Locate.min.css">
+<link rel="stylesheet" href="css/qgis2web.css">
+<link rel="stylesheet" href="css/fontawesome-all.min.css">
+<link rel="stylesheet" href="css/leaflet-search.css">
+<link rel="stylesheet" href="css/leaflet.photon.css">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Nunito:wght@400;600&display=swap');
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Nunito', sans-serif;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* HEADER */
+#map-title {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 15px;
+    background: rgba(128,0,0,0.9);
+    color: white;
+}
+
+/* PANEL */
+#info-panel {
+    position: absolute;
+    left: 20px;
+    top: 100px;
+    width: 250px;
+    z-index: 1000;
+}
+
+.panel-card {
+    background: rgba(128,0,0,0.9);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+}
+
+/* DATA BOX */
+#data-box {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 220px;
+    background: rgba(128,0,0,0.9);
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width:768px){
+    #info-panel, #data-box {
+        width: 90%;
+        left: 5%;
+        right: 5%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div id="map-title">
+    <div>🗺️</div>
+    <div>
+        <b>PETA KABUPATEN SITARO</b><br>
+        <small>Sulawesi Utara</small>
+    </div>
+</div>
+
+<!-- PANEL -->
+<div id="info-panel">
+    <div class="panel-card">
+        <b>Sejarah</b>
+        <p>Kabupaten SITARO merupakan wilayah kepulauan di Sulawesi Utara.</p>
+    </div>
+</div>
+
+<!-- DATA -->
+<div id="data-box">
+    <b>Informasi</b><br>
+    Wilayah: SITARO<br>
+    Tipe: Administratif
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- JS -->
+<script src="js/leaflet.js"></script>
+<script src="data/ADMINISTRASIKABKOTA_AR_50K_2.js"></script>
+
+<script>
+// INIT MAP
+var map = L.map('map').setView([2.7, 125.5], 9);
+
+// BASEMAP
+var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+}).addTo(map);
+
+// GEOJSON
+function style() {
+    return {
+        color: "#333",
+        weight: 1,
+        fillColor: "#c43c39",
+        fillOpacity: 0.7
+    };
+}
+
+function onEachFeature(feature, layer) {
+    if (feature.properties) {
+        layer.bindPopup("<b>" + feature.properties.NAMOBJ + "</b>");
+    }
+}
+
+var geojson = L.geoJSON(json_ADMINISTRASIKABKOTA_AR_50K_2, {
+    style: style,
+    onEachFeature: onEachFeature
+}).addTo(map);
+
+// FIT BOUNDS
+map.fitBounds(geojson.getBounds());
+</script>
+
+</body>
+</html>
